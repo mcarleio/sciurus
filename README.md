@@ -189,9 +189,9 @@ You may ask, how this is different from javas synchronize?
   finished           |    ...             | ... 
   remove exec info   | finished           | ... 
   notify             | remove exec info   | ...
-     -               | notify             | check -> ok
-     -               |     -              | store exec info
-     -               |     -              | execute
+  |                  | notify             | check -> ok
+  |                  |     -              | store exec info
+  |                  |     -              | execute
      
   **Note**: This table is a simplified scenario. Sciurus will also work on more complex scenarios!   
   

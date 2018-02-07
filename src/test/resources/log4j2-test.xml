@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration packages="io.mcarle.sciurus.log4j">
+    <Appenders>
+        <Console name="STDOUT" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d %-5p [%t] %c (%F:%L) - %m%n"/>
+        </Console>
+        <TestLevelAppender name="TestLevelAppender" >
+            <PatternLayout pattern="%d %-5p [%t] %c (%F:%L) - %m%n" />
+        </TestLevelAppender>
+        <TestDateAppender name="TestDateAppender" >
+            <PatternLayout pattern="%d %-5p [%t] [%2X{TID}] %c (%F:%L) - %m%n" />
+        </TestDateAppender>
+    </Appenders>
+    <Loggers>
+        <Logger name="io.mcarle.sciurus.monitor" level="ALL" >
+            <AppenderRef ref="TestLevelAppender"/>
+        </Logger>
+
+        <Logger name="io.mcarle.sciurus.cache" level="ALL" >
+            <AppenderRef ref="TestLevelAppender"/>
+        </Logger>
+
+        <Logger name="io.mcarle.sciurus.lock" level="ALL" >
+            <AppenderRef ref="TestDateAppender"/>
+        </Logger>
+
+        <Root level="INFO">
+            <AppenderRef ref="STDOUT"/>
+        </Root>
+    </Loggers>
+</Configuration>

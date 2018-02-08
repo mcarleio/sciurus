@@ -3,6 +3,8 @@ package io.mcarle.sciurus.cache;
 import io.mcarle.sciurus.Sciurus;
 import io.mcarle.sciurus.annotation.Cache;
 
+import java.time.temporal.ChronoUnit;
+
 import static io.mcarle.sciurus.cache.CacheTest.CACHETIME;
 import static io.mcarle.sciurus.cache.CacheTest.CUSTOM_CACHE_NAME;
 
@@ -87,6 +89,12 @@ public class ToBeCached {
     public byte cacheInMapCache() throws InterruptedException {
         Thread.sleep(100);
         return 12;
+    }
+
+    @Cache(time = 1, unit = ChronoUnit.SECONDS)
+    public double cacheFor1Second() throws InterruptedException {
+        Thread.sleep(100);
+        return Math.random();
     }
 
 }

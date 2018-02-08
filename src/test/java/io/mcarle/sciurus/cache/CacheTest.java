@@ -351,6 +351,14 @@ public class CacheTest {
     }
 
     @Test
+    public void cacheFor1SecondTest() throws InterruptedException {
+        double result = new ToBeCached().cacheFor1Second();
+        Thread.sleep(500);
+        double newResult = new ToBeCached().cacheFor1Second();
+        assertEquals(result, newResult, 0);
+    }
+
+    @Test
     public void unregisterNotExistingCache() {
         Sciurus.deregisterCache(null);
         Sciurus.deregisterCache("");

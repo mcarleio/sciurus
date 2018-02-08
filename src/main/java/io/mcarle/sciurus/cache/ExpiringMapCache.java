@@ -27,7 +27,7 @@ public enum ExpiringMapCache implements CustomCache {
                 executionIdentifier,
                 result,
                 ExpirationPolicy.CREATED,
-                duration.getNano(),
+                duration.getSeconds() * 1_000_000_000 + duration.getNano(),
                 TimeUnit.NANOSECONDS
         );
     }

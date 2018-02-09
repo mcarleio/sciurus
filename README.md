@@ -131,7 +131,7 @@ On all methods annotated with `@Cache`, before execution, Sciurus will check in 
 If that is the case, that value is returned and the actual method execution will be skipped. When there is no such value, Sciurus will store it in the defined cache after 
 executing the method.
 
-**Note**: Sciurus does not distinguish the method call from various instances. So it is not good, to use it on POJOs. A good example would be a proxy or a database repository.
+**Note**: Sciurus does not distinguish the method call from various instances. Therefore, using it on POJOs is not recommended. A good example would be a proxy or a database repository.
 
 ##### General Usage
 ```java

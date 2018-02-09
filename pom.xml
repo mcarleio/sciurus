@@ -4,7 +4,7 @@
 
     <groupId>io.mcarle</groupId>
     <artifactId>sciurus</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>sciurus</name>
@@ -258,7 +258,7 @@
         <url>https://github.com/mcarleio/sciurus</url>
         <connection>scm:git:git@github.com:mcarleio/sciurus.git</connection>
         <developerConnection>scm:git:git@github.com:mcarleio/sciurus.git</developerConnection>
-        <tag>sciurus-1.0.0</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <distributionManagement>

@@ -21,6 +21,7 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.lessThan;
 import static org.hamcrest.Matchers.matchesPattern;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThat;
 
 public class CacheTest {
@@ -188,6 +189,50 @@ public class CacheTest {
 
             assertEquals(expected, result);
             checkCached(post - pre);
+        }
+    }
+
+    @Test
+    public void cacheableWithDifferentParams() throws InterruptedException {
+        {
+            int expected = new ToBeCached().cacheable(42);
+
+            long pre = System.currentTimeMillis();
+            int result = new ToBeCached().cacheable(43);
+            long post = System.currentTimeMillis();
+
+            assertNotEquals(expected, result);
+            checkNotCached(post - pre);
+        }
+        {
+            String expected = new ToBeCached().cacheable("123456");
+
+            long pre = System.currentTimeMillis();
+            String result = new ToBeCached().cacheable("654321");
+            long post = System.currentTimeMillis();
+
+            assertNotEquals(expected, result);
+            checkNotCached(post - pre);
+        }
+        {
+            long expected = new ToBeCached().cacheable("123456", 42);
+
+            long pre = System.currentTimeMillis();
+            long result = new ToBeCached().cacheable("123", 42);
+            long post = System.currentTimeMillis();
+
+            assertNotEquals(expected, result);
+            checkNotCached(post - pre);
+        }
+        {
+            long expected = new ToBeCached().cacheable("123456", 42);
+
+            long pre = System.currentTimeMillis();
+            long result = new ToBeCached().cacheable("123456", 43);
+            long post = System.currentTimeMillis();
+
+            assertNotEquals(expected, result);
+            checkNotCached(post - pre);
         }
     }
 

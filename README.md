@@ -11,6 +11,7 @@ Sciurus is a collection of useful aspects to
 [![License][license-image]](LICENSE)
 [![Build status][travis-image]][travis-url]
 [![Build status][codecov-image]][codecov-url]
+[![Code Quality][codequality-image]][codequality-url]
 
 ## General Usage
 
@@ -242,3 +243,5 @@ limitations under the License.
 [travis-url]: https://travis-ci.org/mcarleio/sciurus
 [codecov-image]: https://img.shields.io/codecov/c/github/mcarleio/sciurus.svg
 [codecov-url]: https://codecov.io/gh/mcarleio/sciurus
+[codequality-image]: https://scrutinizer-ci.com/g/mcarleio/sciurus/badges/quality-score.png?b=master
+[codequality-url]: https://scrutinizer-ci.com/g/mcarleio/sciurus/?branch=master

@@ -15,9 +15,6 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * @author Marcel Carlé <mc@marcel-carle.de>
- */
 @Plugin(name = TestLevelAppender.NAME, category = "Core", elementType = "appender", printObject = true)
 public class TestLevelAppender extends AbstractAppender {
 
@@ -37,9 +34,9 @@ public class TestLevelAppender extends AbstractAppender {
 
     @PluginFactory
     public static TestLevelAppender createAppender(@PluginAttribute("name") String name,
-                                              @PluginElement("Layout") Layout<? extends Serializable> layout,
-                                              @PluginElement("Filter") final Filter filter,
-                                              @PluginAttribute("otherAttribute") String otherAttribute) {
+                                                   @PluginElement("Layout") Layout<? extends Serializable> layout,
+                                                   @PluginElement("Filter") final Filter filter,
+                                                   @PluginAttribute("otherAttribute") String otherAttribute) {
         if (name == null) {
             LOGGER.error("No name provided for TestAppender");
             return null;

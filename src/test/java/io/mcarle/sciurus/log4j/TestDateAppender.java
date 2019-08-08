@@ -14,9 +14,6 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * @author Marcel Carlé <mc@marcel-carle.de>
- */
 @Plugin(name = TestDateAppender.NAME, category = "Core", elementType = "appender", printObject = true)
 public class TestDateAppender extends AbstractAppender {
 

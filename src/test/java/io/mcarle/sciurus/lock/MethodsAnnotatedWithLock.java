@@ -4,9 +4,6 @@ import io.mcarle.sciurus.annotation.Lock;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- * Created by Marcel on 27.04.2016.
- */
 public class MethodsAnnotatedWithLock {
 
     private static final Logger LOG = LogManager.getLogger(MethodsAnnotatedWithLock.class);

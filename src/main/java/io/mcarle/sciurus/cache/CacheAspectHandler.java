@@ -6,6 +6,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serializable;
 import java.time.Duration;
 
 class CacheAspectHandler {
@@ -32,7 +33,7 @@ class CacheAspectHandler {
             // if successfull
             try {
                 // save the result into cache
-                saveIntoCache(executionIdentifier, result, cache);
+                saveIntoCache(executionIdentifier, (Serializable) result, cache);
             } finally {
                 // despite any errors while saving to cache, ignore them and return the result
                 return result;
@@ -53,7 +54,7 @@ class CacheAspectHandler {
         return EMPTY;
     }
 
-    private static void saveIntoCache(ExecutionIdentifier executionIdentifier, Object result, Cache cache) {
+    private static void saveIntoCache(ExecutionIdentifier executionIdentifier, Serializable result, Cache cache) {
         CustomCache customCache = getCache(cache, executionIdentifier);
         if (customCache != null) {
             try {

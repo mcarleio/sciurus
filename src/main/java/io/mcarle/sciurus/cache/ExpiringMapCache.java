@@ -4,6 +4,7 @@ import io.mcarle.sciurus.ExecutionIdentifier;
 import net.jodah.expiringmap.ExpirationPolicy;
 import net.jodah.expiringmap.ExpiringMap;
 
+import java.io.Serializable;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
@@ -22,7 +23,7 @@ public enum ExpiringMapCache implements CustomCache {
     }
 
     @Override
-    public void put(ExecutionIdentifier executionIdentifier, Object result, Duration duration) {
+    public void put(ExecutionIdentifier executionIdentifier, Serializable result, Duration duration) {
         MAP.put(
                 executionIdentifier,
                 result,

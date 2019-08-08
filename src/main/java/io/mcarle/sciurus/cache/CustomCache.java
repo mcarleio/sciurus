@@ -2,6 +2,7 @@ package io.mcarle.sciurus.cache;
 
 import io.mcarle.sciurus.ExecutionIdentifier;
 
+import java.io.Serializable;
 import java.time.Duration;
 
 public interface CustomCache {
@@ -10,7 +11,7 @@ public interface CustomCache {
 
     Object get(ExecutionIdentifier executionIdentifier);
 
-    void put(ExecutionIdentifier executionIdentifier, Object result, Duration duration);
+    void put(ExecutionIdentifier executionIdentifier, Serializable result, Duration duration);
 
     default void preRegister() {
     }

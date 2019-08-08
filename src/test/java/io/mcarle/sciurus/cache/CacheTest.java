@@ -11,6 +11,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.Serializable;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
@@ -337,7 +338,7 @@ public class CacheTest {
                 }
 
                 @Override
-                public void put(ExecutionIdentifier executionIdentifier, Object result, Duration duration) {
+                public void put(ExecutionIdentifier executionIdentifier, Serializable result, Duration duration) {
                 }
             });
             new ToBeCached().cacheInCustomCache();
@@ -356,7 +357,7 @@ public class CacheTest {
                 }
 
                 @Override
-                public void put(ExecutionIdentifier executionIdentifier, Object result, Duration duration) {
+                public void put(ExecutionIdentifier executionIdentifier, Serializable result, Duration duration) {
                     throw new RuntimeException("put: exceptionThrowingCacheTest");
                 }
             });
@@ -514,7 +515,7 @@ public class CacheTest {
         }
 
         @Override
-        public void put(ExecutionIdentifier executionIdentifier, Object result, Duration duration) {
+        public void put(ExecutionIdentifier executionIdentifier, Serializable result, Duration duration) {
             map.put(executionIdentifier, result);
         }
 

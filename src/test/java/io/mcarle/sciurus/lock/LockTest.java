@@ -17,9 +17,6 @@ import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 
-/**
- * Created by Marcel on 28.04.2016.
- */
 @RunWith(Parameterized.class)
 public class LockTest {
 

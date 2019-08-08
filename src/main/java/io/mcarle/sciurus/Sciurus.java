@@ -1,13 +1,12 @@
 package io.mcarle.sciurus;
 
 import io.mcarle.sciurus.cache.CacheRegister;
+import io.mcarle.sciurus.cache.CacheSupplier;
 import io.mcarle.sciurus.cache.CustomCache;
-import io.mcarle.sciurus.monitor.MonitorRegister;
 import io.mcarle.sciurus.monitor.CustomMonitor;
+import io.mcarle.sciurus.monitor.MonitorRegister;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.function.Supplier;
 
 public final class Sciurus {
 
@@ -33,7 +32,7 @@ public final class Sciurus {
         CacheRegister.INSTANCE.register(cacheName, customCache);
     }
 
-    public static void registerCache(String cacheName, Supplier<CustomCache> customCacheSupplier) {
+    public static void registerCache(String cacheName, CacheSupplier customCacheSupplier) {
         LOG.trace("Register cache {}", cacheName);
         CacheRegister.INSTANCE.register(cacheName, customCacheSupplier);
     }

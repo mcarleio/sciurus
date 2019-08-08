@@ -1,28 +1,25 @@
 package io.mcarle.sciurus.cache;
 
-import io.mcarle.sciurus.Sciurus;
 import io.mcarle.sciurus.ExecutionIdentifier;
+import io.mcarle.sciurus.Sciurus;
 import io.mcarle.sciurus.log4j.TestLevelAppender;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.lessThan;
-import static org.hamcrest.Matchers.matchesPattern;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 public class CacheTest {
 
@@ -417,7 +414,7 @@ public class CacheTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void illegalConfiguration2() {
-        Sciurus.registerCache(null, (Supplier<CustomCache>) null);
+        Sciurus.registerCache(null, (CacheSupplier) null);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -427,7 +424,7 @@ public class CacheTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void illegalConfiguration4() {
-        Sciurus.registerCache("A", (Supplier<CustomCache>) null);
+        Sciurus.registerCache("A", (CacheSupplier) null);
     }
 
     @Test(expected = IllegalArgumentException.class)

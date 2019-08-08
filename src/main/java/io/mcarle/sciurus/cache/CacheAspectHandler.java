@@ -1,7 +1,7 @@
 package io.mcarle.sciurus.cache;
 
-import io.mcarle.sciurus.annotation.Cache;
 import io.mcarle.sciurus.ExecutionIdentifier;
+import io.mcarle.sciurus.annotation.Cache;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,18 +17,24 @@ class CacheAspectHandler {
         ExecutionIdentifier executionIdentifier = null;
         Object result = EMPTY;
         try {
+            // check for any cached value
             executionIdentifier = new ExecutionIdentifier(joinPoint.getSignature().toLongString(), joinPoint.getArgs());
             result = loadFromCache(executionIdentifier, cache);
         } finally {
             if (result != EMPTY) {
+                // if cached value was found, return it
                 return result;
             }
 
+            // if no cached value is present, execute method
             result = joinPoint.proceed();
 
+            // if successfull
             try {
+                // save the result into cache
                 saveIntoCache(executionIdentifier, result, cache);
             } finally {
+                // despite any errors while saving to cache, ignore them and return the result
                 return result;
             }
         }
@@ -61,12 +67,12 @@ class CacheAspectHandler {
     private static CustomCache getCache(Cache cache, ExecutionIdentifier executionIdentifier) {
         try {
             return CacheRegister.INSTANCE.getCache(cache.cacheName());
-        } catch (UnknownCacheException uce) {
+        } catch (CacheException.UnknownCache ce) {
             LOG.warn("No cache with name '{}' registered: {}", cache.cacheName(), executionIdentifier);
-        } catch (IllegalStateException ise) {
+        } catch (CacheException.CacheSupplierReturnedNull ce) {
             LOG.warn("Cache returned from supplier for '{}' was null: {}", cache.cacheName(), executionIdentifier);
-        } catch (Throwable t) {
-            LOG.warn("Got exception from cache supplier for '{}': {}", cache.cacheName(), executionIdentifier, t);
+        } catch (CacheException.CacheSupplierThrewException ce) {
+            LOG.warn("Got exception from cache supplier for '{}': {}", cache.cacheName(), executionIdentifier, ce.getCause());
         }
         return null;
     }

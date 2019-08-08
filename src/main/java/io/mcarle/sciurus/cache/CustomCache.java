@@ -11,4 +11,11 @@ public interface CustomCache {
     Object get(ExecutionIdentifier executionIdentifier);
 
     void put(ExecutionIdentifier executionIdentifier, Object result, Duration duration);
+
+    default void preRegister() {
+    }
+
+    default void postDeregister() {
+    }
+
 }

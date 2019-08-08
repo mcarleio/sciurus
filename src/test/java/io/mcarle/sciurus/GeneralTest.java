@@ -4,12 +4,12 @@ import io.mcarle.sciurus.cache.CacheAspect;
 import io.mcarle.sciurus.cache.CacheRegister;
 import io.mcarle.sciurus.cache.ExpiringMapCache;
 import io.mcarle.sciurus.lock.LockAspect;
+import io.mcarle.sciurus.monitor.LoggingMonitor;
 import io.mcarle.sciurus.monitor.MonitorAspect;
 import io.mcarle.sciurus.monitor.MonitorRegister;
-import io.mcarle.sciurus.monitor.LoggingMonitor;
+import io.mcarle.sciurus.retry.RetryAspect;
 import org.aspectj.lang.Aspects;
 import org.junit.Test;
-
 
 import java.util.stream.Stream;
 
@@ -26,6 +26,8 @@ public class GeneralTest {
         Aspects.hasAspect(CacheAspect.class);
         Aspects.aspectOf(LockAspect.class);
         Aspects.hasAspect(LockAspect.class);
+        Aspects.aspectOf(RetryAspect.class);
+        Aspects.hasAspect(RetryAspect.class);
     }
 
     @Test

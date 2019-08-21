@@ -182,6 +182,7 @@
                         <configuration>
                             <message>[maven-scm-plugin] updated NOTICE</message>
                             <includes>NOTICE</includes>
+                            <pushChanges>false</pushChanges>
                         </configuration>
                     </plugin>
                     <plugin>

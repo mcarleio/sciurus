@@ -11,7 +11,7 @@ public class ExampleManager {
 
     /**
      * Think about this method storing the value into a database. After some time for the external resource, every call has its own transaction and tries to store an entity.
-     * If that entity has some kind of unique constraint, then there would be an exception, which ist emulated here with an IllegalStateException.
+     * If that entity has some kind of unique constraint, then there would be an exception, which is emulated here with an IllegalStateException.
      */
     @Lock(on = 0)
     public Collection<String> queryAlbum(int albumNr) {

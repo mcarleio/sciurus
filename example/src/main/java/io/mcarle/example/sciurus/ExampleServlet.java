@@ -13,7 +13,12 @@ import javax.servlet.annotation.WebServlet;
 import java.lang.management.ManagementFactory;
 
 @WebServlet(urlPatterns = "/*", name = "ExampleServlet", loadOnStartup = 1, initParams = {
-        @WebInitParam(name = "jersey.config.server.provider.packages", value = "io.mcarle.example.sciurus.monitor.resources;io.mcarle.example.sciurus.cache.resources;io.mcarle.example.sciurus.lock.resources")
+        @WebInitParam(
+                name = "jersey.config.server.provider.packages",
+                value = "io.mcarle.example.sciurus.monitor.resources;" +
+                        "io.mcarle.example.sciurus.cache.resources;" +
+                        "io.mcarle.example.sciurus.lock.resources;" +
+                        "io.mcarle.example.sciurus.retry.resources")
 })
 public class ExampleServlet extends ServletContainer {
 

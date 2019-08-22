@@ -6,6 +6,7 @@ Sciurus is a collection of useful aspects to
 * monitor execution runtimes of methods
 * lock method executions
 * cache method results
+* retry method executions on exceptions
 
 [![Maven Central][maven-image]][maven-url] 
 [![License][license-image]](LICENSE)
@@ -22,7 +23,7 @@ You need to include Sciurus as dependeny and declare it as an aspect library in 
     <dependency>
         <groupId>io.mcarle</groupId>
         <artifactId>sciurus</artifactId>
-        <version>1.0.0</version>
+        <version>1.1.0</version>
     </dependency>
     ```
     
@@ -196,6 +197,9 @@ You may ask, how this is different from javas synchronize?
      
   **Note**: This table is a simplified scenario. Sciurus will also work on more complex scenarios!   
   
+### @Retry
+When a method annotated with `@Retry` throws an exception, then Sciurus will execute the method again for the amount of specified retries.
+  
 ## Use Case Examples
 There are a number of possible use cases for each aspect.
 
@@ -214,7 +218,12 @@ There are a number of possible use cases for each aspect.
 
 ### @Lock
 * Prevent multiple storing (e.g. in databases)
-* Prevent multiple execution of long running or high cpu consuming methods (e.g. in combination with `@Cache`)  
+* Prevent multiple execution of long running or high cpu consuming methods (e.g. in combination with `@Cache`)
+  
+### @Retry
+* Retry storing entities into the database due to locking exceptions
+* Retry a failed connection to a web service
+* Retry a method which may lead to some random or temporary incidents
 
 ## License
 

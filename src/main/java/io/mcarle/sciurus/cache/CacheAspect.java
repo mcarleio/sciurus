@@ -11,16 +11,6 @@ import org.aspectj.lang.annotation.Pointcut;
 public class CacheAspect {
 
     /**
-     * Checks, if cache of Sciurus is started
-     *
-     * @return The state of sciurus' cache: {@code true} if it is started, {@code false} otherwise.
-     */
-    @Pointcut("if()")
-    public static boolean isCacheStarted() {
-        return Sciurus.isCacheStarted();
-    }
-
-    /**
      * Matches any execution of any method returning a serializable result
      */
     @Pointcut("execution((java.io.Serializable+ || byte || short || int || long || float || double || char || boolean) *(..))")
@@ -41,11 +31,15 @@ public class CacheAspect {
     void cacheAnnotated(Cache cache) {
     }
 
-    @Around("isCacheStarted() && anyMethodReturningSerializable() && !anyMethodWithMinimumOneNonSerializableParameter() && cacheAnnotated(cache)")
+    @Around(value = "anyMethodReturningSerializable() && !anyMethodWithMinimumOneNonSerializableParameter() && cacheAnnotated(cache)")
     public Object startedAndExecutionOfAnyMethodAnnotatedWithCache(
-          ProceedingJoinPoint joinPoint,
-          Cache cache
+            ProceedingJoinPoint joinPoint,
+            Cache cache
     ) throws Throwable {
-        return CacheAspectHandler.executeAndCache(joinPoint, cache);
+        if (Sciurus.isCacheStarted()) {
+            return CacheAspectHandler.executeAndCache(joinPoint, cache);
+        } else {
+            return joinPoint.proceed();
+        }
     }
 }

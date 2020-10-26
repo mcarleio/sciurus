@@ -11,16 +11,6 @@ import org.aspectj.lang.annotation.Pointcut;
 public class MonitorAspect {
 
     /**
-     * Checks, if monitor of Sciurus is started
-     *
-     * @return The state of sciurus' monitor: {@code true} if it is started, {@code false} otherwise.
-     */
-    @Pointcut("if()")
-    public static boolean isMonitorStarted() {
-        return Sciurus.isMonitorStarted();
-    }
-
-    /**
      * Matches any execution of any method
      */
     @Pointcut("execution(* *(..))")
@@ -34,12 +24,16 @@ public class MonitorAspect {
     void monitorAnnotated(Monitor monitor) {
     }
 
-    @Around("isMonitorStarted() && anyMethod() && monitorAnnotated(monitor)")
+    @Around(value = "anyMethod() && monitorAnnotated(monitor)")
     public Object startedAndExecutionOfAnyMethodAnnotatedWithMonitor(
-          ProceedingJoinPoint joinPoint,
-          Monitor monitor
+            ProceedingJoinPoint joinPoint,
+            Monitor monitor
     ) throws Throwable {
-        return MonitorAspectHandler.executeAndMeasure(joinPoint);
+        if (Sciurus.isMonitorStarted()) {
+            return MonitorAspectHandler.executeAndMeasure(joinPoint);
+        } else {
+            return joinPoint.proceed();
+        }
     }
 
 }

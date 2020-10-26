@@ -13,8 +13,9 @@ import org.junit.Test;
 
 import java.util.stream.Stream;
 
-import static junit.framework.TestCase.assertTrue;
+import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 
 public class GeneralTest {
 
@@ -38,18 +39,20 @@ public class GeneralTest {
         Stream.of(LoggingMonitor.values()).map(LoggingMonitor::name).forEach(LoggingMonitor::valueOf);
     }
 
+    @SuppressWarnings({"SimplifiableAssertion", "ConstantConditions"})
     @Test
     public void equalsOfExecutionIdentifier() {
         ExecutionIdentifier ei = new ExecutionIdentifier("abc", new Object[0]);
         assertFalse(ei.equals(null));
-        assertFalse(ei.equals(new Object()));
-        assertFalse(ei.equals(new ExecutionIdentifier("def", new Object[0])));
-        assertFalse(ei.equals(new ExecutionIdentifier("abc", new Object[]{"ABC"})));
+        assertNotEquals(ei, new Object());
+        assertNotEquals(ei, new ExecutionIdentifier("def", new Object[0]));
+        assertNotEquals(ei, new ExecutionIdentifier("abc", new Object[]{"ABC"}));
 
-        assertTrue(ei.equals(new ExecutionIdentifier("abc", new Object[0])));
+        assertEquals(ei, new ExecutionIdentifier("abc", new Object[0]));
     }
 
     @Test
+    @SuppressWarnings("InstantiationOfUtilityClass")
     public void initializeStaticClasses() {
         new Sciurus();
     }

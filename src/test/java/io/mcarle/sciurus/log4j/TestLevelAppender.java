@@ -5,6 +5,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
@@ -20,19 +21,16 @@ public class TestLevelAppender extends AbstractAppender {
 
     public final static String NAME = "TestLevelAppender";
 
+    @SuppressWarnings("unused")
     private static final long serialVersionUID = 8047713135100613185L;
-    private List<Map.Entry<Level, String>> messages = Collections.synchronizedList(new ArrayList<>());
+    private final List<Map.Entry<Level, String>> messages = Collections.synchronizedList(new ArrayList<>());
 
     protected TestLevelAppender(String name, Filter filter, Layout<? extends Serializable> layout) {
-        super(name, filter, layout);
-    }
-
-    @Override
-    public void append(LogEvent event) {
-        messages.add(new AbstractMap.SimpleEntry<>(event.getLevel(), event.getMessage().getFormattedMessage()));
+        super(name, filter, layout, true, Property.EMPTY_ARRAY);
     }
 
     @PluginFactory
+    @SuppressWarnings("unused")
     public static TestLevelAppender createAppender(@PluginAttribute("name") String name,
                                                    @PluginElement("Layout") Layout<? extends Serializable> layout,
                                                    @PluginElement("Filter") final Filter filter,
@@ -45,6 +43,11 @@ public class TestLevelAppender extends AbstractAppender {
             layout = PatternLayout.createDefaultLayout();
         }
         return new TestLevelAppender(name, filter, layout);
+    }
+
+    @Override
+    public void append(LogEvent event) {
+        messages.add(new AbstractMap.SimpleEntry<>(event.getLevel(), event.getMessage().getFormattedMessage()));
     }
 
     public List<String> getMessages() {

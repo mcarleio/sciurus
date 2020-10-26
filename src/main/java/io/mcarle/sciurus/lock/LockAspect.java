@@ -23,7 +23,7 @@ public class LockAspect {
     void lockAnnotated(Lock lock) {
     }
 
-    @Around("anyMethod() && lockAnnotated(lock)")
+    @Around(value = "anyMethod() && lockAnnotated(lock)", argNames = "joinPoint,lock")
     public Object executionOfAnyMethodAnnotatedWithLock(
             ProceedingJoinPoint joinPoint,
             Lock lock

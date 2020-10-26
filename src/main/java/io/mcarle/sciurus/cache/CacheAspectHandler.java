@@ -14,6 +14,7 @@ class CacheAspectHandler {
     private static final Logger LOG = LoggerFactory.getLogger(CacheAspectHandler.class);
     private final static Object EMPTY = CustomCache.EMPTY;
 
+    @SuppressWarnings({"finally", "ReturnInsideFinallyBlock"})
     static Object executeAndCache(ProceedingJoinPoint joinPoint, Cache cache) throws Throwable {
         ExecutionIdentifier executionIdentifier = null;
         Object result = EMPTY;

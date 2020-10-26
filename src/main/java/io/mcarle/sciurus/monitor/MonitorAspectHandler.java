@@ -24,13 +24,13 @@ class MonitorAspectHandler {
             throw t;
         } finally {
             MonitorRegister.INSTANCE.notifyRegisteredMonitors(
-                  Duration.of(duration, ChronoUnit.NANOS),
-                  signature.getDeclaringTypeName(),
-                  signature.getMethod(),
-                  joinPoint.getArgs(),
-                  throwable,
-                  signature.getReturnType(),
-                  returnValue
+                    Duration.of(duration, ChronoUnit.NANOS),
+                    signature.getDeclaringTypeName(),
+                    signature.getMethod(),
+                    joinPoint.getArgs(),
+                    throwable,
+                    signature.getReturnType(),
+                    returnValue
             );
         }
         return returnValue;

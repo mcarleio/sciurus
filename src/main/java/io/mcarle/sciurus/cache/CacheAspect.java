@@ -31,7 +31,7 @@ public class CacheAspect {
     void cacheAnnotated(Cache cache) {
     }
 
-    @Around(value = "anyMethodReturningSerializable() && !anyMethodWithMinimumOneNonSerializableParameter() && cacheAnnotated(cache)")
+    @Around(value = "anyMethodReturningSerializable() && !anyMethodWithMinimumOneNonSerializableParameter() && cacheAnnotated(cache)", argNames = "joinPoint,cache")
     public Object startedAndExecutionOfAnyMethodAnnotatedWithCache(
             ProceedingJoinPoint joinPoint,
             Cache cache

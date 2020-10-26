@@ -5,14 +5,15 @@ import java.time.Duration;
 
 public interface CustomMonitor {
 
+    @SuppressWarnings("rawtypes")
     void monitored(
-          final Duration duration,
-          final String declaringTypeName,
-          final Method method,
-          final Object[] methodArgs,
-          final Throwable throwable,
-          final Class returnType,
-          final Object returnValue
+            final Duration duration,
+            final String declaringTypeName,
+            final Method method,
+            final Object[] methodArgs,
+            final Throwable throwable,
+            final Class returnType,
+            final Object returnValue
     );
 
 }

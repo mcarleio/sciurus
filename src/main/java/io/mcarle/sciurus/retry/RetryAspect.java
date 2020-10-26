@@ -23,7 +23,7 @@ public class RetryAspect {
     void retryAnnotated(Retry retry) {
     }
 
-    @Around("anyMethod() && retryAnnotated(retry)")
+    @Around(value = "anyMethod() && retryAnnotated(retry)", argNames = "joinPoint,retry")
     public Object executionOfAnyMethodAnnotatedWithRetry(
             ProceedingJoinPoint joinPoint,
             Retry retry

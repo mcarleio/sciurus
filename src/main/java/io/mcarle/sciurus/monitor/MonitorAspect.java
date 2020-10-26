@@ -24,7 +24,7 @@ public class MonitorAspect {
     void monitorAnnotated(Monitor monitor) {
     }
 
-    @Around(value = "anyMethod() && monitorAnnotated(monitor)")
+    @Around(value = "anyMethod() && monitorAnnotated(monitor)", argNames = "joinPoint,monitor")
     public Object startedAndExecutionOfAnyMethodAnnotatedWithMonitor(
             ProceedingJoinPoint joinPoint,
             Monitor monitor

@@ -14,13 +14,19 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.closeTo;
+import static org.hamcrest.Matchers.matchesPattern;
 import static org.junit.Assert.*;
 
 public class MonitorTest {
 
-    private TestLevelAppender appender;
     private final static String NAME = ToBeMonitored.class.getName();
+    private TestLevelAppender appender;
+
+    private static long getDurationInMillis(Duration duration) {
+        return (duration.toNanos() + 500_000) / 1_000_000;
+    }
 
     @Before
     public void initAppender() {
@@ -32,6 +38,7 @@ public class MonitorTest {
         Sciurus.startMonitor();
     }
 
+    @SuppressWarnings("InstantiationOfUtilityClass")
     @Test
     public void forBetterCodeCoverage() {
         new MonitorAspectHandler();
@@ -166,7 +173,7 @@ public class MonitorTest {
     public void monitorRegisterTest() throws InterruptedException {
         TestMonitor monitor = new TestMonitor();
         Sciurus.registerMonitor(monitor);
-        Sciurus.deregisterMonitor(LoggingMonitor.INSTANCE);
+        assertTrue(Sciurus.deregisterMonitor(LoggingMonitor.INSTANCE));
         try {
             new ToBeMonitored().warnIfTooLong(100);
             new ToBeMonitored().warnIfTooLong(200);
@@ -196,15 +203,12 @@ public class MonitorTest {
         assertEquals(Level.WARN, appender.getLogs().get(0).getKey());
     }
 
-    private static long getDurationInMillis(Duration duration) {
-        return (duration.toNanos() + 500_000) / 1_000_000;
-    }
+    static class TestMonitor implements CustomMonitor {
 
-    class TestMonitor implements CustomMonitor {
-
-        private Map<Method, Collection<Duration>> methodExecutionDurations = new HashMap<>();
+        private final Map<Method, Collection<Duration>> methodExecutionDurations = new HashMap<>();
 
         @Override
+        @SuppressWarnings("rawtypes")
         public void monitored(Duration duration, String declaringTypeName, Method method, Object[] methodArgs, Throwable throwable, Class returnType, Object returnValue) {
             Collection<Duration> durations = methodExecutionDurations.getOrDefault(method, new ArrayList<>());
             durations.add(duration);

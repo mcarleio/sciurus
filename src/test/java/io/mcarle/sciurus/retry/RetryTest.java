@@ -7,9 +7,11 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.matchesPattern;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class RetryTest {
 
@@ -25,6 +27,7 @@ public class RetryTest {
     }
 
     @Test
+    @SuppressWarnings("InstantiationOfUtilityClass")
     public void forBetterCodeCoverage() {
         new RetryAspectHandler();
     }

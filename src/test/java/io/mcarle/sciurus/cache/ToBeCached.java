@@ -8,6 +8,7 @@ import java.time.temporal.ChronoUnit;
 import static io.mcarle.sciurus.cache.CacheTest.CACHETIME;
 import static io.mcarle.sciurus.cache.CacheTest.CUSTOM_CACHE_NAME;
 
+@SuppressWarnings("unused")
 public class ToBeCached {
 
     @Cache(time = CACHETIME)

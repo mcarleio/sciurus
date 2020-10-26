@@ -2,7 +2,6 @@ package io.mcarle.sciurus.monitor;
 
 import java.lang.reflect.Method;
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -10,7 +9,7 @@ import java.util.Set;
 public enum MonitorRegister {
     INSTANCE;
 
-    private static Set<CustomMonitor> MONITOR_REGISTER = Collections.synchronizedSet(
+    private static final Set<CustomMonitor> MONITOR_REGISTER = Collections.synchronizedSet(
             new LinkedHashSet<>(
                     Collections.singletonList(
                             LoggingMonitor.INSTANCE // Add the LoggingMonitor as default.
@@ -18,6 +17,7 @@ public enum MonitorRegister {
             )
     );
 
+    @SuppressWarnings("rawtypes")
     void notifyRegisteredMonitors(
             Duration duration,
             String declaringTypeName,

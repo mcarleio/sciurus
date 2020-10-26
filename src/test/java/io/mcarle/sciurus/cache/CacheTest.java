@@ -19,14 +19,15 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 public class CacheTest {
 
-    private static TestLevelAppender appender;
     final static long CACHETIME = 100;
     final static String CUSTOM_CACHE_NAME = "CUSTOM";
+    private static TestLevelAppender appender;
 
     @Before
     public void startCache() {
@@ -47,6 +48,7 @@ public class CacheTest {
     }
 
     @Test
+    @SuppressWarnings("InstantiationOfUtilityClass")
     public void forBetterCodeCoverage() {
         new CacheAspectHandler();
     }
@@ -87,30 +89,30 @@ public class CacheTest {
     @Test
     public void notCacheableBecauseOfReturnTypeNotSerializableTest() throws InterruptedException {
         {
-            new ToBeCached().notCacheableBecauseOfReturnTypeNotSerializable();
+            assertNotNull(new ToBeCached().notCacheableBecauseOfReturnTypeNotSerializable());
 
             long pre = System.currentTimeMillis();
-            new ToBeCached().notCacheableBecauseOfReturnTypeNotSerializable();
+            assertNotNull(new ToBeCached().notCacheableBecauseOfReturnTypeNotSerializable());
             long post = System.currentTimeMillis();
 
             checkNotCached(post - pre);
         }
         {
             Object o = new Object();
-            new ToBeCached().notCacheableBecauseOfReturnTypeNotSerializable(o);
+            assertNotNull(new ToBeCached().notCacheableBecauseOfReturnTypeNotSerializable(o));
 
             long pre = System.currentTimeMillis();
-            new ToBeCached().notCacheableBecauseOfReturnTypeNotSerializable(o);
+            assertNotNull(new ToBeCached().notCacheableBecauseOfReturnTypeNotSerializable(o));
             long post = System.currentTimeMillis();
 
             checkNotCached(post - pre);
         }
         {
             String s = "123456";
-            new ToBeCached().notCacheableBecauseOfReturnTypeNotSerializable(s);
+            assertNotNull(new ToBeCached().notCacheableBecauseOfReturnTypeNotSerializable(s));
 
             long pre = System.currentTimeMillis();
-            new ToBeCached().notCacheableBecauseOfReturnTypeNotSerializable(s);
+            assertNotNull(new ToBeCached().notCacheableBecauseOfReturnTypeNotSerializable(s));
             long post = System.currentTimeMillis();
 
             checkNotCached(post - pre);
@@ -121,10 +123,10 @@ public class CacheTest {
     public void notCacheableBecauseOfParameterTypeNotSerializableTest() throws InterruptedException {
         {
             Object o = new Object();
-            new ToBeCached().notCacheableBecauseOfParameterTypeNotSerializable(o);
+            assertEquals(42, new ToBeCached().notCacheableBecauseOfParameterTypeNotSerializable(o));
 
             long pre = System.currentTimeMillis();
-            new ToBeCached().notCacheableBecauseOfParameterTypeNotSerializable(o);
+            assertEquals(42, new ToBeCached().notCacheableBecauseOfParameterTypeNotSerializable(o));
             long post = System.currentTimeMillis();
 
             checkNotCached(post - pre);
@@ -132,10 +134,10 @@ public class CacheTest {
         {
             Object o = new Object();
             int i = 42;
-            new ToBeCached().notCacheableBecauseOfParameterTypeNotSerializable(i, o);
+            assertEquals(42, new ToBeCached().notCacheableBecauseOfParameterTypeNotSerializable(i, o));
 
             long pre = System.currentTimeMillis();
-            new ToBeCached().notCacheableBecauseOfParameterTypeNotSerializable(i, o);
+            assertEquals(42, new ToBeCached().notCacheableBecauseOfParameterTypeNotSerializable(i, o));
             long post = System.currentTimeMillis();
 
             checkNotCached(post - pre);
@@ -293,7 +295,7 @@ public class CacheTest {
         }
         {
             appender.clear();
-            Sciurus.deregisterCache(CUSTOM_CACHE_NAME);
+            assertTrue(Sciurus.deregisterCache(CUSTOM_CACHE_NAME));
             long expected = new ToBeCached().cacheInCustomCache();
 
             long pre = System.currentTimeMillis();
@@ -312,7 +314,7 @@ public class CacheTest {
             Sciurus.registerCache(CUSTOM_CACHE_NAME, () -> null);
             new ToBeCached().cacheInCustomCache();
             checkIllegalStateException();
-            Sciurus.deregisterCache(CUSTOM_CACHE_NAME);
+            assertTrue(Sciurus.deregisterCache(CUSTOM_CACHE_NAME));
         }
     }
 
@@ -324,7 +326,7 @@ public class CacheTest {
             });
             new ToBeCached().cacheInCustomCache();
             checkExceptionFromSupplier();
-            Sciurus.deregisterCache(CUSTOM_CACHE_NAME);
+            assertTrue(Sciurus.deregisterCache(CUSTOM_CACHE_NAME));
         }
     }
 
@@ -343,7 +345,7 @@ public class CacheTest {
             });
             new ToBeCached().cacheInCustomCache();
             checkExceptionWhileReading();
-            Sciurus.deregisterCache(CUSTOM_CACHE_NAME);
+            assertTrue(Sciurus.deregisterCache(CUSTOM_CACHE_NAME));
         }
     }
 
@@ -363,7 +365,7 @@ public class CacheTest {
             });
             new ToBeCached().cacheInCustomCache();
             checkExceptionWhileStoring();
-            Sciurus.deregisterCache(CUSTOM_CACHE_NAME);
+            assertTrue(Sciurus.deregisterCache(CUSTOM_CACHE_NAME));
         }
     }
 
@@ -375,7 +377,7 @@ public class CacheTest {
         new ToBeCached().cacheable();
         assertEquals(1, testCache.countAndClear());
 
-        Sciurus.deregisterCache(Sciurus.CACHE_GLOBAL);
+        assertTrue(Sciurus.deregisterCache(Sciurus.CACHE_GLOBAL));
         new ToBeCached().cacheable();
         assertEquals(0, testCache.countAndClear());
     }
@@ -385,10 +387,10 @@ public class CacheTest {
         TestCache testCache = new TestCache();
 
         Sciurus.registerCache(Sciurus.CACHE_MAP, testCache);
-        new ToBeCached().cacheInMapCache();
+        assertEquals(12, new ToBeCached().cacheInMapCache());
         assertEquals(1, testCache.countAndClear());
 
-        Sciurus.deregisterCache(Sciurus.CACHE_MAP);
+        assertTrue(Sciurus.deregisterCache(Sciurus.CACHE_MAP));
         new ToBeCached().cacheInMapCache();
         assertEquals(0, testCache.countAndClear());
     }
@@ -403,9 +405,9 @@ public class CacheTest {
 
     @Test
     public void unregisterNotExistingCache() {
-        Sciurus.deregisterCache(null);
-        Sciurus.deregisterCache("");
-        Sciurus.deregisterCache("asd");
+        assertFalse(Sciurus.deregisterCache(null));
+        assertFalse(Sciurus.deregisterCache(""));
+        assertFalse(Sciurus.deregisterCache("asd"));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -505,9 +507,9 @@ public class CacheTest {
         assertThat(time, is(greaterThan(CACHETIME - 5)));
     }
 
-    class TestCache implements CustomCache {
+    static class TestCache implements CustomCache {
 
-        private Map<ExecutionIdentifier, Object> map = new HashMap<>();
+        private final Map<ExecutionIdentifier, Object> map = new HashMap<>();
 
         @Override
         public Object get(ExecutionIdentifier executionIdentifier) {

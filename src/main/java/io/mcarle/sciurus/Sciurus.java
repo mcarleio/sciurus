@@ -10,10 +10,10 @@ import org.slf4j.LoggerFactory;
 
 public final class Sciurus {
 
-    private final static Logger LOG = LoggerFactory.getLogger(Sciurus.class);
     public final static String CACHE_GLOBAL = "CACHE_GLOBAL";
     public final static String CACHE_MAP = "CACHE_MAP";
 
+    private final static Logger LOG = LoggerFactory.getLogger(Sciurus.class);
     private static boolean MONITOR_STARTED = false;
     private static boolean CACHE_STARTED = false;
 

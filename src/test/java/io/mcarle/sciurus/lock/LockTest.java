@@ -12,7 +12,6 @@ import org.junit.runners.Parameterized;
 
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.function.IntFunction;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
@@ -20,17 +19,24 @@ import static org.junit.Assert.*;
 @RunWith(Parameterized.class)
 public class LockTest {
 
-    private ExecutorService executor;
-    private Long LAST_VISIT = 0L;
-    private final List<Integer> ORDER_LIST = Collections.synchronizedList(new ArrayList<>());
     private static final String CREATE_RUNNABLE_EXCEPTION_THROWING = "createRunnableExceptionThrowing";
     private static final String CREATE_RUNNABLE_IGNORE_PARAMETERS = "createRunnableIgnoreParameters";
     private static final String CREATE_RUNNABLE_WITH_PARAMETERS = "createRunnableWithParameters";
     private static final String CREATE_RUNNABLE_RECURSIVE_LOCK = "createRunnableRecursiveLock";
     private static final String CREATE_RUNNABLE_RECURSIVE_LOCK_WITH_PARAMETER = "createRunnableRecursiveLockWithParameter";
     private static final String CREATE_RUNNABLE_MULTI_LOCKED_METHOD = "createRunnableMultiLockedMethod1";
-
+    private final List<Integer> ORDER_LIST = Collections.synchronizedList(new ArrayList<>());
+    private ExecutorService executor;
+    private Long LAST_VISIT = 0L;
     private TestDateAppender appender;
+
+    public LockTest() {
+    }
+
+    @Parameterized.Parameters
+    public static List<Object[]> data() {
+        return Arrays.asList(new Object[2][0]);
+    }
 
     @Before
     public void cleanAppender() {
@@ -48,15 +54,8 @@ public class LockTest {
         LAST_VISIT = 0L;
     }
 
-    @Parameterized.Parameters
-    public static List<Object[]> data() {
-        return Arrays.asList(new Object[2][0]);
-    }
-
-    public LockTest() {
-    }
-
     @Test
+    @SuppressWarnings("InstantiationOfUtilityClass")
     public void forBetterCodeCoverage() {
         new LockAspectHandler();
     }
@@ -113,11 +112,15 @@ public class LockTest {
         executor.shutdown();
         assertTrue(executor.awaitTermination(4, TimeUnit.SECONDS));
 
-        Map.Entry<Date, String>[] logMessages = appender.getLogs().stream().filter(s -> s.getValue().matches(CREATE_RUNNABLE_IGNORE_PARAMETERS + "\\d:.*")).toArray((IntFunction<Map.Entry<Date, String>[]>) Map.Entry[]::new);
+        List<Map.Entry<Date, String>> logMessages = appender
+                .getLogs()
+                .stream()
+                .filter(s -> s.getValue().matches(CREATE_RUNNABLE_IGNORE_PARAMETERS + "\\d:.*"))
+                .collect(Collectors.toList());
 
-        assertEquals(10, logMessages.length);
+        assertEquals(10, logMessages.size());
         for (int i = 0; i < 10; i++) {
-            assertEquals(CREATE_RUNNABLE_IGNORE_PARAMETERS + ORDER_LIST.get(i) + ":", logMessages[i].getValue());
+            assertEquals(CREATE_RUNNABLE_IGNORE_PARAMETERS + ORDER_LIST.get(i) + ":", logMessages.get(i).getValue());
         }
     }
 
@@ -135,14 +138,18 @@ public class LockTest {
         executor.shutdown();
         assertTrue(executor.awaitTermination(4, TimeUnit.SECONDS));
 
-        Map.Entry<Date, String>[] logMessages = appender.getLogs().stream().filter(s -> s.getValue().matches(CREATE_RUNNABLE_WITH_PARAMETERS + "\\d:.*")).toArray((IntFunction<Map.Entry<Date, String>[]>) Map.Entry[]::new);
+        List<Map.Entry<Date, String>> logMessages = appender
+                .getLogs()
+                .stream()
+                .filter(s -> s.getValue().matches(CREATE_RUNNABLE_WITH_PARAMETERS + "\\d:.*"))
+                .collect(Collectors.toList());
 
-        assertEquals(10, logMessages.length);
+        assertEquals(10, logMessages.size());
 
-        List<Map.Entry<Date, String>> zeroZero = Arrays.stream(logMessages).filter(s -> s.getValue().contains(": 0 -") && s.getValue().endsWith("- 0")).collect(Collectors.toList());
-        List<Map.Entry<Date, String>> zeroOne = Arrays.stream(logMessages).filter(s -> s.getValue().contains(": 0 -") && s.getValue().endsWith("- 1")).collect(Collectors.toList());
-        List<Map.Entry<Date, String>> oneZero = Arrays.stream(logMessages).filter(s -> s.getValue().contains(": 1 -") && s.getValue().endsWith("- 0")).collect(Collectors.toList());
-        List<Map.Entry<Date, String>> oneOne = Arrays.stream(logMessages).filter(s -> s.getValue().contains(": 1 -") && s.getValue().endsWith("- 1")).collect(Collectors.toList());
+        List<Map.Entry<Date, String>> zeroZero = logMessages.stream().filter(s -> s.getValue().contains(": 0 -") && s.getValue().endsWith("- 0")).collect(Collectors.toList());
+        List<Map.Entry<Date, String>> zeroOne = logMessages.stream().filter(s -> s.getValue().contains(": 0 -") && s.getValue().endsWith("- 1")).collect(Collectors.toList());
+        List<Map.Entry<Date, String>> oneZero = logMessages.stream().filter(s -> s.getValue().contains(": 1 -") && s.getValue().endsWith("- 0")).collect(Collectors.toList());
+        List<Map.Entry<Date, String>> oneOne = logMessages.stream().filter(s -> s.getValue().contains(": 1 -") && s.getValue().endsWith("- 1")).collect(Collectors.toList());
 
         assertTrue(zeroZero.get(0).getKey().getTime() + 500 <= zeroZero.get(1).getKey().getTime());
         assertTrue(zeroZero.get(1).getKey().getTime() + 500 <= zeroZero.get(2).getKey().getTime());
@@ -162,45 +169,49 @@ public class LockTest {
         executor.shutdown();
         assertTrue(executor.awaitTermination(6, TimeUnit.SECONDS));
 
-        Map.Entry<Date, String>[] logMessages = appender.getLogs().stream().filter(s -> s.getValue().matches(CREATE_RUNNABLE_RECURSIVE_LOCK + "\\d:.*")).toArray((IntFunction<Map.Entry<Date, String>[]>) Map.Entry[]::new);
+        List<Map.Entry<Date, String>> logMessages = appender
+                .getLogs()
+                .stream()
+                .filter(s -> s.getValue().matches(CREATE_RUNNABLE_RECURSIVE_LOCK + "\\d:.*"))
+                .collect(Collectors.toList());
 
-        assertEquals(26, logMessages.length);
+        assertEquals(26, logMessages.size());
         int index = 0;
         for (int i = 0; i < 4; i++) {
             switch (ORDER_LIST.get(i)) {
                 case 1:
-                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "1: 1 - 0", logMessages[index++].getValue());
+                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "1: 1 - 0", logMessages.get(index++).getValue());
                     break;
                 case 2:
-                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "2: 2 - 1", logMessages[index++].getValue());
-                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "2: 1 - 0", logMessages[index++].getValue());
-                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "2: 2 - 0", logMessages[index++].getValue());
+                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "2: 2 - 1", logMessages.get(index++).getValue());
+                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "2: 1 - 0", logMessages.get(index++).getValue());
+                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "2: 2 - 0", logMessages.get(index++).getValue());
                     break;
                 case 3:
-                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "3: 3 - 2", logMessages[index++].getValue());
-                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "3: 2 - 1", logMessages[index++].getValue());
-                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "3: 1 - 0", logMessages[index++].getValue());
-                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "3: 2 - 0", logMessages[index++].getValue());
-                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "3: 3 - 1", logMessages[index++].getValue());
-                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "3: 1 - 0", logMessages[index++].getValue());
-                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "3: 3 - 0", logMessages[index++].getValue());
+                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "3: 3 - 2", logMessages.get(index++).getValue());
+                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "3: 2 - 1", logMessages.get(index++).getValue());
+                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "3: 1 - 0", logMessages.get(index++).getValue());
+                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "3: 2 - 0", logMessages.get(index++).getValue());
+                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "3: 3 - 1", logMessages.get(index++).getValue());
+                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "3: 1 - 0", logMessages.get(index++).getValue());
+                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "3: 3 - 0", logMessages.get(index++).getValue());
                     break;
                 case 4:
-                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "4: 4 - 3", logMessages[index++].getValue());
-                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "4: 3 - 2", logMessages[index++].getValue());
-                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "4: 2 - 1", logMessages[index++].getValue());
-                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "4: 1 - 0", logMessages[index++].getValue());
-                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "4: 2 - 0", logMessages[index++].getValue());
-                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "4: 3 - 1", logMessages[index++].getValue());
-                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "4: 1 - 0", logMessages[index++].getValue());
-                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "4: 3 - 0", logMessages[index++].getValue());
-                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "4: 4 - 2", logMessages[index++].getValue());
-                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "4: 2 - 1", logMessages[index++].getValue());
-                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "4: 1 - 0", logMessages[index++].getValue());
-                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "4: 2 - 0", logMessages[index++].getValue());
-                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "4: 4 - 1", logMessages[index++].getValue());
-                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "4: 1 - 0", logMessages[index++].getValue());
-                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "4: 4 - 0", logMessages[index++].getValue());
+                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "4: 4 - 3", logMessages.get(index++).getValue());
+                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "4: 3 - 2", logMessages.get(index++).getValue());
+                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "4: 2 - 1", logMessages.get(index++).getValue());
+                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "4: 1 - 0", logMessages.get(index++).getValue());
+                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "4: 2 - 0", logMessages.get(index++).getValue());
+                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "4: 3 - 1", logMessages.get(index++).getValue());
+                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "4: 1 - 0", logMessages.get(index++).getValue());
+                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "4: 3 - 0", logMessages.get(index++).getValue());
+                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "4: 4 - 2", logMessages.get(index++).getValue());
+                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "4: 2 - 1", logMessages.get(index++).getValue());
+                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "4: 1 - 0", logMessages.get(index++).getValue());
+                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "4: 2 - 0", logMessages.get(index++).getValue());
+                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "4: 4 - 1", logMessages.get(index++).getValue());
+                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "4: 1 - 0", logMessages.get(index++).getValue());
+                    assertEquals(CREATE_RUNNABLE_RECURSIVE_LOCK + "4: 4 - 0", logMessages.get(index++).getValue());
                     break;
                 default:
                     fail("Ungültige Zahl");
@@ -222,12 +233,16 @@ public class LockTest {
         executor.shutdown();
         assertTrue(executor.awaitTermination(10, TimeUnit.SECONDS));
 
-        Map.Entry<Date, String>[] logMessages = appender.getLogs().stream().filter(s -> s.getValue().matches(CREATE_RUNNABLE_RECURSIVE_LOCK_WITH_PARAMETER + "\\d:.*")).toArray((IntFunction<Map.Entry<Date, String>[]>) Map.Entry[]::new);
+        List<Map.Entry<Date, String>> logMessages = appender
+                .getLogs()
+                .stream()
+                .filter(s -> s.getValue().matches(CREATE_RUNNABLE_RECURSIVE_LOCK_WITH_PARAMETER + "\\d:.*"))
+                .collect(Collectors.toList());
 
         for (int i = 1; i < 5; i++) {
             int j = i;
-            List<Map.Entry<Date, String>> firstHalf = Arrays.stream(logMessages).filter(s -> s.getValue().contains(j + ":")).collect(Collectors.toList());
-            List<Map.Entry<Date, String>> secondHalf = Arrays.stream(logMessages).filter(s -> s.getValue().contains((j + 4) + ":")).collect(Collectors.toList());
+            List<Map.Entry<Date, String>> firstHalf = logMessages.stream().filter(s -> s.getValue().contains(j + ":")).collect(Collectors.toList());
+            List<Map.Entry<Date, String>> secondHalf = logMessages.stream().filter(s -> s.getValue().contains((j + 4) + ":")).collect(Collectors.toList());
 
             switch (i) {
                 case 1:
@@ -291,11 +306,15 @@ public class LockTest {
         executor.shutdown();
         assertTrue(executor.awaitTermination(10, TimeUnit.SECONDS));
 
-        Map.Entry<Date, String>[] logMessages = appender.getLogs().stream().filter(s -> s.getValue().matches(CREATE_RUNNABLE_MULTI_LOCKED_METHOD + "\\d")).toArray((IntFunction<Map.Entry<Date, String>[]>) Map.Entry[]::new);
+        List<Map.Entry<Date, String>> logMessages = appender
+                .getLogs()
+                .stream()
+                .filter(s -> s.getValue().matches(CREATE_RUNNABLE_MULTI_LOCKED_METHOD + "\\d"))
+                .collect(Collectors.toList());
 
         for (int i = 1; i <= 4; i++) {
             int j = i;
-            List<Map.Entry<Date, String>> list = Arrays.stream(logMessages).filter(s -> s.getValue().endsWith(j + "")).collect(Collectors.toList());
+            List<Map.Entry<Date, String>> list = logMessages.stream().filter(s -> s.getValue().endsWith(j + "")).collect(Collectors.toList());
             assertEquals(1, list.size());
         }
     }
@@ -383,6 +402,7 @@ public class LockTest {
         };
     }
 
+    @SuppressWarnings("BusyWait")
     private void wait50ms(int number) throws InterruptedException {
         synchronized (ORDER_LIST) {
             while (System.currentTimeMillis() - LAST_VISIT < 50) {

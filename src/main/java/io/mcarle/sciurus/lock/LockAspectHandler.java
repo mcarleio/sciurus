@@ -1,7 +1,7 @@
 package io.mcarle.sciurus.lock;
 
-import io.mcarle.sciurus.annotation.Lock;
 import io.mcarle.sciurus.ExecutionIdentifier;
+import io.mcarle.sciurus.annotation.Lock;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
